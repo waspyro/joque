@@ -27,7 +27,7 @@ class DefaultedMap extends Map {
   #defaultValueSetter
   constructor(defaultValueSetter) {
     super();
-    this.#defaultValue = defaultValueSetter
+    this.#defaultValueSetter = defaultValueSetter
   }
 
   get(key) {
