@@ -17,8 +17,9 @@ export default class Joque {
 
   take(resolver) {
     const job = this.#freeJobs.shift()
-    if(job) resolver(job)
+    if (job) resolver(job)
     else this.#freeWorkers.push(resolver)
+    return time => setTimeout(this.take.bind(this, resolver), time)
   }
 
 }
