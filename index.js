@@ -3,7 +3,7 @@ export default class Joque {
   #freeWorkers = []
 
   getState() {
-    return this.#freeJobs.length - this.#freeWorkers.length
+    return [this.#freeWorkers.length, this.#freeJobs.length]
   }
 
   add(jobData) {
@@ -15,11 +15,14 @@ export default class Joque {
     })
   }
 
-  take(resolver) {
-    const job = this.#freeJobs.shift()
-    if (job) resolver(job)
-    else this.#freeWorkers.push(resolver)
-    return time => setTimeout(this.take.bind(this, resolver), time)
+  take(resolver, clones = 1) {
+    while(clones--) {
+      const repeater = time => setTimeout(this.take.bind(this, resolver), time)
+      const job = this.#freeJobs.shift()
+      if (job) resolver(job, repeater)
+      else this.#freeWorkers.push(job => resolver(job, repeater))
+    }
+    return this
   }
 
 }
